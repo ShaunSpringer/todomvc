@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<title>Template • TodoMVC</title>
+		<link rel="stylesheet" href="components/todomvc-common/base.css">
+		<!-- CSS overrides - remove if you don't need it -->
+		<link rel="stylesheet" href="css/app.css">
+	</head>
+	<body>
+		<section id="todoapp" data-controller="Main">
+			<header id="header">
+				<h1>todos</h1>
+				<input id="new-todo" placeholder="What needs to be done?" autofocus>
+			</header>
+			<!-- This section should be hidden by default and shown when there are todos -->
+			<section id="main">
+				<input id="toggle-all" type="checkbox">
+				<label for="toggle-all">Mark all as complete</label>
+				<ul id="todo-list"></ul>
+				</ul>
+			</section>
+			<!-- This footer should hidden by default and shown when there are todos -->
+			<footer id="footer">
+				<!-- This should be `0 items left` by default -->
+				<span id="todo-count"><strong>1</strong> item left</span>
+				<!-- Remove this if you don't implement routing -->
+				<ul id="filters">
+					<li>
+						<a class="selected" href="#/">All</a>
+					</li>
+					<li>
+						<a href="#/active">Active</a>
+					</li>
+					<li>
+						<a href="#/completed">Completed</a>
+					</li>
+				</ul>
+				<!-- Hidden if no completed items are left ↓ -->
+				<button id="clear-completed">Clear completed (1)</button>
+			</footer>
+		</section>
+		<footer id="info">
+			<p>Double-click to edit a todo</p>
+			<!-- Remove the below line ↓ -->
+			<p>Template by <a href="http://github.com/sindresorhus">Sindre Sorhus</a></p>
+			<!-- Change this out with your name and url ↓ -->
+			<p>Created by <a href="http://github.com/shaunspringer">Shaun Springer</a></p>
+			<p>Part of <a href="http://todomvc.com">TodoMVC</a></p>
+		</footer>
+		<!--Begin Templates -->
+    <script type="text/template" id="ListItem">
+			<li class="{{^editing}}{{#completed}}completed{{/completed}}{{/editing}}{{^completed}}{{#editing}}editing{{/editing}}{{/completed}}{{^editing}}{{^completed}}view{{/completed}}{{/editing}}">
+				{{^editing}}
+					<input class="toggle" type="checkbox" {{#completed}}checked{{/completed}}>
+					<label>{{text}}</label>
+					<button class="destroy"></button>
+				{{/editing}}
+				{{#editing}}
+					<input class="edit" value="{{text}}">
+				{{/editing}}
+			</li>
+    </script>
+     <!-- End Templates -->
+		<!-- Scripts here. Don't remove this ↓ -->
+		<script src="components/todomvc-common/base.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/zepto/1.0/zepto.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/hogan.js/2.0.0/hogan.js"></script>
+		<script src="lib/wraith.js"></script>
+		<script src="js/src.js"></script>
+    <script>
+        new Wraith.Bootloader()
+    </script>
+	</body>
+</html>
