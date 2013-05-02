@@ -57,42 +57,52 @@
     };
 
     List.prototype.remainingCount = function() {
-      return this.get('items').length - this.completedCount();
+      return this.get('items').length() - this.completedCount();
     };
 
     List.prototype.setCompleted = function(completed) {
-      var i, item, items, _i, _len, _results;
+      var i, item, items, _i, _len;
       items = this.get('items').all();
-      _results = [];
       for (i = _i = 0, _len = items.length; _i < _len; i = ++_i) {
         item = items[i];
-        _results.push(item.set('completed', completed));
+        item.set('completed', completed);
       }
-      return _results;
+      return this;
     };
 
     List.prototype.removeCompleted = function() {
-      var i, item, items, _i, _len, _results;
+      var i, item, items, _i, _len;
       items = this.get('items').all();
-      _results = [];
       for (i = _i = 0, _len = items.length; _i < _len; i = ++_i) {
         item = items[i];
         if (item.get('completed')) {
-          _results.push(this.get('items').remove(item.get('_id')));
+          this.get('items').remove(item.get('_id'));
         }
       }
-      return _results;
+      return this;
     };
 
     return List;
 
   })(Wraith.Model);
 
-  Wraith.Controllers.Main = (function(_super) {
+  Wraith.Views.TodoList = (function(_super) {
 
-    __extends(Main, _super);
+    __extends(TodoList, _super);
 
-    function Main() {
+    function TodoList() {
+      return TodoList.__super__.constructor.apply(this, arguments);
+    }
+
+    return TodoList;
+
+  })(Wraith.View);
+
+  Wraith.Controllers.TodoManager = (function(_super) {
+
+    __extends(TodoManager, _super);
+
+    function TodoManager() {
       this.inputKeypress = __bind(this.inputKeypress, this);
 
       this.toggleAll = __bind(this.toggleAll, this);
@@ -104,18 +114,45 @@
       this.itemDelete = __bind(this.itemDelete, this);
 
       this.itemToggle = __bind(this.itemToggle, this);
-      return Main.__super__.constructor.apply(this, arguments);
+
+      this.getDataFromEl = __bind(this.getDataFromEl, this);
+      return TodoManager.__super__.constructor.apply(this, arguments);
     }
 
-    Main.prototype.view = 'ListItem';
+    TodoManager.prototype.view_events = [
+      {
+        type: 'click',
+        selector: 'button.destroy',
+        cb: 'itemDelete'
+      }, {
+        type: 'click',
+        selector: '#todo-list input[type=checkbox]',
+        cb: 'itemToggle'
+      }, {
+        type: 'dblclick',
+        selector: 'label',
+        cb: 'itemEdit'
+      }, {
+        type: 'keypress',
+        selector: 'input.edit',
+        cb: 'itemKeypress'
+      }, {
+        type: 'change',
+        selector: '#toggle-all',
+        cb: 'toggleAll'
+      }, {
+        type: 'keypress',
+        selector: 'input#new-todo',
+        cb: 'inputKeypress'
+      }
+    ];
 
-    Main.prototype.init = function() {
-      var items;
-      Main.__super__.init.call(this);
-      this.list = new Wraith.Models.List;
-      this.list.bind('add:items', this.add);
-      this.list.bind('remove:items', this.remove);
-      items = this.list.get('items');
+    TodoManager.prototype.init = function() {
+      var items, list;
+      TodoManager.__super__.init.call(this);
+      this.registerModel('list', new Wraith.Models.List);
+      list = this.models['list'];
+      items = list.get('items');
       items.create({
         text: 'Create a TodoMVC template',
         completed: true
@@ -123,66 +160,83 @@
       items.create({
         text: 'Rule the web'
       });
-      items.create({
+      return items.create({
         text: 'Finish wraith'
       });
-      this.bind('ui:click:button.destroy', this.itemDelete);
-      this.bind('ui:click:input[type=checkbox]', this.itemToggle);
-      this.bind('ui:dblclick:label', this.itemEdit);
-      this.bind('ui:keypress:input.edit', this.itemKeypress);
-      this.bind('ui:change:input#toggle-all', this.toggleAll);
-      return this.bind('ui:keypress:input#new-todo', this.inputKeypress);
     };
 
-    Main.prototype.itemToggle = function(e) {
-      var id, item;
-      id = this.findByEl(e.currentTarget);
-      item = this.list.get('items').findById(id);
-      return item.set('completed', e.currentTarget.checked);
+    TodoManager.prototype.getDataFromEl = function(el) {
+      var $view, id, items, list;
+      $view = this.findViewByElement(el);
+      id = this.findIdByView($view);
+      list = this.models['list'];
+      items = list.get('items');
+      return {
+        items: items,
+        list: list,
+        id: id
+      };
     };
 
-    Main.prototype.itemDelete = function(e) {
-      var id, item;
-      id = this.findByEl(e.currentTarget);
-      item = this.list.get('items').findById(id);
-      return this.list.get('items').remove(id);
+    TodoManager.prototype.itemToggle = function(e) {
+      var id, item, items, list, target, _ref;
+      _ref = this.getDataFromEl(e.currentTarget), items = _ref.items, list = _ref.list, id = _ref.id;
+      item = items.findById(id);
+      item.set('completed', !item.get('completed'));
+      target = item;
+      if (items.length() === list.completedCount()) {
+        this.$els['toggle-all'].attr('checked', true);
+      } else if (list.remainingCount() !== 0) {
+        this.$els['toggle-all'].attr('checked', false);
+      }
+      return this;
     };
 
-    Main.prototype.itemEdit = function(e) {
-      var id, item;
-      id = this.findByEl(e.currentTarget);
-      item = this.list.get('items').findById(id);
+    TodoManager.prototype.itemDelete = function(e) {
+      var id, items, list, _ref;
+      _ref = this.getDataFromEl(e.currentTarget), items = _ref.items, list = _ref.list, id = _ref.id;
+      return items.remove(id);
+    };
+
+    TodoManager.prototype.itemEdit = function(e) {
+      var id, item, items, list, _ref;
+      _ref = this.getDataFromEl(e.currentTarget), items = _ref.items, list = _ref.list, id = _ref.id;
+      item = items.findById(id);
       return item.set('editing', !item.get('editing'));
     };
 
-    Main.prototype.itemKeypress = function(e) {
-      var id, item, val;
+    TodoManager.prototype.itemKeypress = function(e) {
+      var id, item, items, list, val, _ref;
       if (!(e.keyCode === 13 && (val = e.currentTarget.value) !== '')) {
         return;
       }
-      id = this.findByEl(e.currentTarget);
-      item = this.list.get('items').findById(id);
+      _ref = this.getDataFromEl(e.currentTarget), items = _ref.items, list = _ref.list, id = _ref.id;
+      item = items.findById(id);
       item.set('text', val);
       return item.set('editing', false);
     };
 
-    Main.prototype.toggleAll = function(e) {
-      debugger;
+    TodoManager.prototype.toggleAll = function(e) {
+      var checked, list;
+      checked = e.currentTarget.checked;
+      list = this.models['list'];
+      list.setCompleted(checked);
+      return this.$els['toggle-all'].attr('checked', checked);
     };
 
-    Main.prototype.inputKeypress = function(e) {
-      var val;
+    TodoManager.prototype.inputKeypress = function(e) {
+      var id, items, list, val, _ref;
       if (!(e.keyCode === 13 && (val = e.currentTarget.value) !== '')) {
         return;
       }
-      this.list.get('items').create({
-        text: val,
-        selected: false
+      _ref = this.getDataFromEl(e.currentTarget), items = _ref.items, list = _ref.list, id = _ref.id;
+      items.create({
+        text: val
       });
       return e.currentTarget.value = '';
     };
 
-    return Main;
+    return TodoManager;
 
   })(Wraith.Controller);
 
