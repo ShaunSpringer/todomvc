@@ -9,16 +9,17 @@
 		<link rel="stylesheet" href="css/app.css">
 	</head>
 	<body>
-		<section id="todoapp" data-controller="Main">
+		<section id="todoapp" data-controller="TodoManager">
 			<header id="header">
 				<h1>todos</h1>
 				<input id="new-todo" placeholder="What needs to be done?" autofocus>
 			</header>
 			<!-- This section should be hidden by default and shown when there are todos -->
-			<section id="main">
-				<input id="toggle-all" type="checkbox">
+			<section id="main" data-view="TodoList">
+				<input id="toggle-all" type="checkbox" data-element>
 				<label for="toggle-all">Mark all as complete</label>
-				<ul id="todo-list"></ul>
+				<ul id="todo-list" data-template="ListItem" data-map="list.items">
+				</ul>
 				</ul>
 			</section>
 			<!-- This footer should hidden by default and shown when there are todos -->
