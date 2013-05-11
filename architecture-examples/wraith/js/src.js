@@ -116,8 +116,6 @@
       this.updateToggleState = __bind(this.updateToggleState, this);
 
       this.itemToggle = __bind(this.itemToggle, this);
-
-      this.getModelIdFromEl = __bind(this.getModelIdFromEl, this);
       return TodoManager.__super__.constructor.apply(this, arguments);
     }
 
@@ -139,7 +137,7 @@
         selector: 'input.edit',
         cb: 'itemKeypress'
       }, {
-        type: 'change',
+        type: 'click',
         selector: '#toggle-all',
         cb: 'toggleAll'
       }, {
@@ -166,64 +164,51 @@
       });
     };
 
-    TodoManager.prototype.getModelIdFromEl = function(el) {
-      var $view;
-      $view = this.findViewByElement(el);
-      return this.findIdByView($view);
-    };
-
-    TodoManager.prototype.itemToggle = function(e) {
-      var id, item;
-      id = this.getModelIdFromEl(e.currentTarget);
+    TodoManager.prototype.itemToggle = function(e, $view, id) {
+      var item;
       item = this.items.findById(id);
       item.set('completed', !item.get('completed'));
       return this.updateToggleState();
     };
 
     TodoManager.prototype.updateToggleState = function() {
+      var $toggleAll;
+      $toggleAll = this.$els['toggle-all'];
       if (this.items.length() === this.list.completedCount()) {
-        this.$els['toggle-all'].attr('checked', true);
+        return $toggleAll.checked = true;
       } else if (this.list.remainingCount() !== 0) {
-        this.$els['toggle-all'].removeAttr('checked');
+        return $toggleAll.checked = false;
       }
-      return this;
     };
 
     TodoManager.prototype.itemDelete = function(e) {
       return items.remove(this.getModelIdFromEl(e.currentTarget));
     };
 
-    TodoManager.prototype.itemEdit = function(e) {
-      var id, item;
-      id = this.getModelIdFromEl(e.currentTarget);
+    TodoManager.prototype.itemEdit = function(e, $view, id) {
+      var item;
       item = this.items.findById(id);
       item.set('completed', false);
       return item.set('editing', !item.get('editing'));
     };
 
-    TodoManager.prototype.itemKeypress = function(e) {
-      var id, item, val;
+    TodoManager.prototype.itemKeypress = function(e, $view, id) {
+      var item, val;
       if (!(e.keyCode === 13 && (val = e.currentTarget.value) !== '')) {
         return;
       }
-      id = this.getModelIdFromEl(e.currentTarget);
       item = this.items.findById(id);
       item.set('text', val);
       return item.set('editing', false);
     };
 
-    TodoManager.prototype.toggleAll = function(e) {
+    TodoManager.prototype.toggleAll = function(e, $view, id) {
       var checked;
-      checked = e.currentTarget.checked;
-      this.list.setCompleted(checked);
-      if (checked) {
-        return this.$els['toggle-all'].attr('checked', true);
-      } else {
-        return this.$els['toggle-all'].removeAttr('checked');
-      }
+      checked = !e.currentTarget.checked;
+      return this.list.setCompleted(!checked);
     };
 
-    TodoManager.prototype.inputKeypress = function(e) {
+    TodoManager.prototype.inputKeypress = function(e, $item, id) {
       var val;
       if (!(e.keyCode === 13 && (val = e.currentTarget.value) !== '')) {
         return;
@@ -231,7 +216,8 @@
       this.items.create({
         text: val
       });
-      return e.currentTarget.value = '';
+      e.currentTarget.value = '';
+      return this.updateToggleState();
     };
 
     return TodoManager;

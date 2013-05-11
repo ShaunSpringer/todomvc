@@ -33,7 +33,7 @@ class Wraith.Controllers.TodoManager extends Wraith.Controller
     { type: 'click', selector: '#todo-list input[type=checkbox]', cb: 'itemToggle' }
     { type: 'dblclick', selector: 'label', cb: 'itemEdit' }
     { type: 'keypress', selector: 'input.edit', cb: 'itemKeypress' }
-    { type: 'change', selector: '#toggle-all', cb: 'toggleAll' }
+    { type: 'click', selector: '#toggle-all', cb: 'toggleAll' }
     { type: 'keypress', selector: 'input#new-todo', cb: 'inputKeypress' }
   ]
 
@@ -46,45 +46,37 @@ class Wraith.Controllers.TodoManager extends Wraith.Controller
     @items.create { text: 'Rule the web' }
     @items.create { text: 'Finish wraith' }
 
-  getModelIdFromEl: (el) =>
-    $view = @findViewByElement el
-    @findIdByView $view
-
-  itemToggle: (e) =>
-    id = @getModelIdFromEl(e.currentTarget)
+  itemToggle: (e, $view, id) =>
     item = @items.findById id
     item.set('completed', !item.get('completed'))
     @updateToggleState()
 
   updateToggleState: =>
+    $toggleAll = @$els['toggle-all']
     if @items.length() is @list.completedCount()
-      @$els['toggle-all'].attr('checked', true)
+      $toggleAll.checked = true
     else if @list.remainingCount() isnt 0
-      @$els['toggle-all'].removeAttr('checked')
-    @
+      $toggleAll.checked = false
 
   itemDelete: (e) => items.remove @getModelIdFromEl(e.currentTarget)
 
-  itemEdit: (e) =>
-    id = @getModelIdFromEl(e.currentTarget)
+  itemEdit: (e, $view, id) =>
     item = @items.findById id
     item.set('completed', false)
     item.set('editing', !item.get('editing'))
 
-  itemKeypress: (e) =>
+  itemKeypress: (e, $view, id) =>
     return unless e.keyCode is 13 and (val = e.currentTarget.value) isnt ''
-    id = @getModelIdFromEl(e.currentTarget)
     item = @items.findById id
     item.set('text', val)
     item.set('editing', false)
 
-  toggleAll: (e) =>
-    checked = e.currentTarget.checked
-    @list.setCompleted(checked)
-    if checked then @$els['toggle-all'].attr('checked', true)
-    else @$els['toggle-all'].removeAttr('checked')
+  toggleAll: (e, $view, id) =>
+    checked = !e.currentTarget.checked
+    @list.setCompleted(!checked)
 
-  inputKeypress: (e) =>
+  inputKeypress: (e, $item, id) =>
     return unless e.keyCode is 13 and (val = e.currentTarget.value) isnt ''
     @items.create { text: val }
     e.currentTarget.value = ''
+    @updateToggleState()
