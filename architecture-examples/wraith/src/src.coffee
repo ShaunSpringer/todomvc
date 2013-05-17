@@ -57,7 +57,7 @@ class Wraith.Controllers.TodoManager extends Wraith.Controller
     else if @list.remainingCount() isnt 0
       $toggleAll.checked = false
 
-  itemDelete: (e) => items.remove @getModelIdFromEl(e.currentTarget)
+  itemDelete: (e, $view, model) => @items.remove model.get('_id')
 
   itemEdit: (e, $view, model) =>
     model.set('completed', false)
@@ -65,9 +65,8 @@ class Wraith.Controllers.TodoManager extends Wraith.Controller
 
   itemKeypress: (e, $view, model) =>
     return unless e.keyCode is 13 and (val = e.currentTarget.value) isnt ''
-    item = @items.findById id
-    item.set('text', val)
-    item.set('editing', false)
+    model.set('text', val)
+    model.set('editing', false)
 
   toggleAll: (e, $view, model) =>
     checked = !e.currentTarget.checked

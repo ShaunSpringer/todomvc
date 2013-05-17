@@ -179,8 +179,8 @@
       }
     };
 
-    TodoManager.prototype.itemDelete = function(e) {
-      return items.remove(this.getModelIdFromEl(e.currentTarget));
+    TodoManager.prototype.itemDelete = function(e, $view, model) {
+      return this.items.remove(model.get('_id'));
     };
 
     TodoManager.prototype.itemEdit = function(e, $view, model) {
@@ -189,13 +189,12 @@
     };
 
     TodoManager.prototype.itemKeypress = function(e, $view, model) {
-      var item, val;
+      var val;
       if (!(e.keyCode === 13 && (val = e.currentTarget.value) !== '')) {
         return;
       }
-      item = this.items.findById(id);
-      item.set('text', val);
-      return item.set('editing', false);
+      model.set('text', val);
+      return model.set('editing', false);
     };
 
     TodoManager.prototype.toggleAll = function(e, $view, model) {
