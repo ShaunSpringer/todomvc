@@ -46,9 +46,8 @@ class Wraith.Controllers.TodoManager extends Wraith.Controller
     @items.create { text: 'Rule the web' }
     @items.create { text: 'Finish wraith' }
 
-  itemToggle: (e, $view, id) =>
-    item = @items.findById id
-    item.set('completed', !item.get('completed'))
+  itemToggle: (e, $view, model) =>
+    model.set('completed', !model.get('completed'))
     @updateToggleState()
 
   updateToggleState: =>
@@ -60,22 +59,21 @@ class Wraith.Controllers.TodoManager extends Wraith.Controller
 
   itemDelete: (e) => items.remove @getModelIdFromEl(e.currentTarget)
 
-  itemEdit: (e, $view, id) =>
-    item = @items.findById id
-    item.set('completed', false)
-    item.set('editing', !item.get('editing'))
+  itemEdit: (e, $view, model) =>
+    model.set('completed', false)
+    model.set('editing', !model.get('editing'))
 
-  itemKeypress: (e, $view, id) =>
+  itemKeypress: (e, $view, model) =>
     return unless e.keyCode is 13 and (val = e.currentTarget.value) isnt ''
     item = @items.findById id
     item.set('text', val)
     item.set('editing', false)
 
-  toggleAll: (e, $view, id) =>
+  toggleAll: (e, $view, model) =>
     checked = !e.currentTarget.checked
     @list.setCompleted(!checked)
 
-  inputKeypress: (e, $item, id) =>
+  inputKeypress: (e, $item, model) =>
     return unless e.keyCode is 13 and (val = e.currentTarget.value) isnt ''
     @items.create { text: val }
     e.currentTarget.value = ''
