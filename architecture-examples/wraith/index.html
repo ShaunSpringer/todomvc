@@ -25,7 +25,7 @@
 			<!-- This footer should hidden by default and shown when there are todos -->
 			<footer id="footer">
 				<!-- This should be `0 items left` by default -->
-				<span id="todo-count"><strong data-map="list">{{length}}</strong> item left</span>
+				<span id="todo-count"><strong data-map="list"><%=length%></strong> item left</span>
 				<!-- Remove this if you don't implement routing -->
 				<ul id="filters">
 					<li>
@@ -39,7 +39,7 @@
 					</li>
 				</ul>
 				<!-- Hidden if no completed items are left ↓ -->
-				<button id="clear-completed">Clear completed (1)</button>
+				<button id="clear-completed">Clear completed (<%=completedCount%>)</button>
 			</footer>
 		</section>
 		<footer id="info">
@@ -52,15 +52,20 @@
 		</footer>
 		<!--Begin Templates -->
     <script type="text/template" id="ListItem">
-			<li class="{{^editing}}{{#completed}}completed{{/completed}}{{/editing}}{{^completed}}{{#editing}}editing{{/editing}}{{/completed}}{{^editing}}{{^completed}}view{{/completed}}{{/editing}}">
-				{{^editing}}
-					<input class="toggle" type="checkbox" {{#completed}}checked{{/completed}}>
-					<label>{{text}}</label>
+    	<% if (!editing && completed) { %>
+    		<li class="completed">
+    	<% } else if (!completed && editing) { %>
+    		<li class="editing">
+    	<% } else { %>
+    		<li class="view">
+    	<% } %>
+				<% if (!editing) { %>
+					<input class="toggle" type="checkbox" <% if (completed) { %>checked<% }%>>
+					<label><%=text%></label>
 					<button class="destroy"></button>
-				{{/editing}}
-				{{#editing}}
+				<% } else { %>
 					<input class="edit" value="{{text}}">
-				{{/editing}}
+				<% } %>
 			</li>
     </script>
      <!-- End Templates -->
