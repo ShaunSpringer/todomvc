@@ -86,18 +86,6 @@
 
   })(Wraith.Model);
 
-  Wraith.Views.TodoList = (function(_super) {
-
-    __extends(TodoList, _super);
-
-    function TodoList() {
-      return TodoList.__super__.constructor.apply(this, arguments);
-    }
-
-    return TodoList;
-
-  })(Wraith.View);
-
   Wraith.Controllers.TodoManager = (function(_super) {
 
     __extends(TodoManager, _super);
@@ -151,17 +139,13 @@
       TodoManager.__super__.init.call(this);
       this.registerModel('list', new Wraith.Models.List);
       this.list = this.models['list'];
-      this.items = this.list.get('items');
-      this.items.create({
-        text: 'Create a TodoMVC template',
-        completed: true
-      });
-      this.items.create({
-        text: 'Rule the web'
-      });
-      return this.items.create({
-        text: 'Finish wraith'
-      });
+      return this.items = this.list.get('items');
+      /*
+          @items.create { text: 'Create a TodoMVC template', completed: true }
+          @items.create { text: 'Rule the web' }
+          @items.create { text: 'Finish wraith' }
+      */
+
     };
 
     TodoManager.prototype.itemToggle = function(e, $view, model) {

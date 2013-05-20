@@ -24,8 +24,6 @@ class Wraith.Models.List extends Wraith.Model
       @get('items').remove(item.get('_id'))
     @
 
-class Wraith.Views.TodoList extends Wraith.View
-
 
 class Wraith.Controllers.TodoManager extends Wraith.Controller
   view_events: [
@@ -42,9 +40,11 @@ class Wraith.Controllers.TodoManager extends Wraith.Controller
     @registerModel 'list', new Wraith.Models.List
     @list = @models['list']
     @items = @list.get('items')
+    ###
     @items.create { text: 'Create a TodoMVC template', completed: true }
     @items.create { text: 'Rule the web' }
     @items.create { text: 'Finish wraith' }
+    ###
 
   itemToggle: (e, $view, model) =>
     model.set('completed', !model.get('completed'))
