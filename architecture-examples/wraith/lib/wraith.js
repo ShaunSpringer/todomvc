@@ -1,1 +1,0 @@
-/Users/shaunspringer/Code/Wraith/lib/wraith.js

@@ -24,7 +24,7 @@
 			<!-- This footer should hidden by default and shown when there are todos -->
 			<footer id="footer">
 				<!-- This should be `0 items left` by default -->
-				<span id="todo-count"><strong data-map="list.items"><%=length%></strong> item left</span>
+				<span id="todo-count"><strong data-map="list"><%=get('items').length()%></strong> item left</span>
 				<!-- Remove this if you don't implement routing -->
 				<ul id="filters">
 					<li>
@@ -38,7 +38,7 @@
 					</li>
 				</ul>
 				<!-- Hidden if no completed items are left ↓ -->
-				<button id="clear-completed" data-map="list">Clear completed (<%=completedCount%>)</button>
+				<button id="clear-completed" data-map="list">Clear completed (<%=completedCount()%>)</button>
 			</footer>
 		</section>
 		<footer id="info">
@@ -49,29 +49,29 @@
 		</footer>
 		<!--Begin Templates -->
     <script type="text/template" id="ListItem">
-    	<% if (!editing && completed) { %>
+    	<% if (get('completed') && !get('editing')) { %>
     		<li class="completed">
-    	<% } else if (!completed && editing) { %>
+    	<% } else if (get('editing')) { %>
     		<li class="editing">
     	<% } else { %>
-    		<li class="view">
+    		<li>
     	<% } %>
-				<% if (!editing) { %>
-					<input class="toggle" type="checkbox" <% if (completed) { %>checked<% }%>>
-					<label><%=text%></label>
-					<button class="destroy"></button>
-				<% } else { %>
+				<% if (get('editing')) { %>
 					<input class="edit" value="<%=text%>">
+				<% } else { %>
+					<input class="toggle" type="checkbox" <% if (get('completed')) { %>checked<% }%>>
+					<label><%=get('text')%></label>
+					<button class="destroy"></button>
 				<% } %>
 			</li>
     </script>
     <!-- End Templates -->
 		<!-- Scripts here. Don't remove this ↓ -->
 		<script src="components/todomvc-common/base.js"></script>
-    <!--<script src="//cdnjs.cloudflare.com/ajax/libs/zepto/1.0/zepto.js"></script>
-    <script src="//cdnjs.cloudflare.com/ajax/libs/hogan.js/2.0.0/hogan.js"></script>-->
-    <script src="lib/hogan.js"></script>
-    <script src="lib/zepto.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/zepto/1.0/zepto.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/hogan.js/2.0.0/hogan.js"></script>
+    <!--<script src="lib/hogan.js"></script>
+    <script src="lib/zepto.js"></script>-->
 		<script src="lib/wraith.js"></script>
 		<script src="js/src.js"></script>
     <script>

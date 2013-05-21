@@ -40,6 +40,7 @@ class Wraith.Controllers.TodoManager extends Wraith.Controller
     @registerModel 'list', new Wraith.Models.List
     @list = @models['list']
     @items = @list.get('items')
+
     ###
     @items.create { text: 'Create a TodoMVC template', completed: true }
     @items.create { text: 'Rule the web' }
@@ -60,7 +61,6 @@ class Wraith.Controllers.TodoManager extends Wraith.Controller
   itemDelete: (e, $view, model) => @items.remove model.get('_id')
 
   itemEdit: (e, $view, model) =>
-    model.set('completed', false)
     model.set('editing', !model.get('editing'))
 
   itemKeypress: (e, $view, model) =>

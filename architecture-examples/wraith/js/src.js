@@ -168,7 +168,6 @@
     };
 
     TodoManager.prototype.itemEdit = function(e, $view, model) {
-      model.set('completed', false);
       return model.set('editing', !model.get('editing'));
     };
 
