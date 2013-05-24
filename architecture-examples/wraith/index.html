@@ -12,19 +12,27 @@
 		<section id="todoapp" data-controller="TodoManager">
 			<header id="header">
 				<h1>todos</h1>
-				<input id="new-todo" placeholder="What needs to be done?" autofocus>
+				<input id="new-todo" placeholder="What needs to be done?" autofocus data-events="keypress:inputKeypress">
 			</header>
 			<!-- This section should be hidden by default and shown when there are todos -->
-			<section id="main" data-view="TodoList">
+			<section id="main">
 				<input id="toggle-all" type="checkbox" data-element>
 				<label for="toggle-all">Mark all as complete</label>
-				<ul id="todo-list" data-template="ListItem" data-map="list.items" data-repeat>
+				<ul id="todo-list">
+          <li class="completed" data-bind="list.items" data-repeat data-events="dblclick:itemEdit">
+            <div class="view">
+              <input class="toggle" type="checkbox" data-checked="completed" data-events="click:itemToggle">
+              <label>{{text}}</label>
+              <button class="destroy" data-events="click:itemDelete"></button>
+            </div>
+            <input class="edit" value="Create a TodoMVC template" data-events="keypress:itemKeypress">
+          </li>
 				</ul>
 			</section>
 			<!-- This footer should hidden by default and shown when there are todos -->
 			<footer id="footer">
 				<!-- This should be `0 items left` by default -->
-				<span id="todo-count"><strong data-map="list"><%=get('items').length()%></strong> item left</span>
+				<span id="todo-count"><strong data-bind="list.items">{{length()}}</strong> item left</span>
 				<!-- Remove this if you don't implement routing -->
 				<ul id="filters">
 					<li>
@@ -38,7 +46,7 @@
 					</li>
 				</ul>
 				<!-- Hidden if no completed items are left ↓ -->
-				<button id="clear-completed" data-map="list">Clear completed (<%=completedCount()%>)</button>
+				<button id="clear-completed" data-bind="list">Clear completed ({{completedCount()}})</button>
 			</footer>
 		</section>
 		<footer id="info">

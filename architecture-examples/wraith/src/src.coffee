@@ -26,29 +26,17 @@ class Wraith.Models.List extends Wraith.Model
 
 
 class Wraith.Controllers.TodoManager extends Wraith.Controller
-  view_events: [
-    { type: 'click', selector: 'button.destroy', cb: 'itemDelete' }
-    { type: 'click', selector: '#todo-list input[type=checkbox]', cb: 'itemToggle' }
-    { type: 'dblclick', selector: 'label', cb: 'itemEdit' }
-    { type: 'keypress', selector: 'input.edit', cb: 'itemKeypress' }
-    { type: 'click', selector: '#toggle-all', cb: 'toggleAll' }
-    { type: 'keypress', selector: 'input#new-todo', cb: 'inputKeypress' }
-  ]
-
   init: ->
     super()
-    @registerModel 'list', new Wraith.Models.List
-    @list = @models['list']
+    @list = @registerModel new Wraith.Models.List, 'list'
     @items = @list.get('items')
 
-    ###
     @items.create { text: 'Create a TodoMVC template', completed: true }
     @items.create { text: 'Rule the web' }
     @items.create { text: 'Finish wraith' }
-    ###
 
-  itemToggle: (e, $view, model) =>
-    model.set('completed', !model.get('completed'))
+  itemToggle: (e) =>
+    e.model.set('completed', !e.model.get('completed'))
     @updateToggleState()
 
   updateToggleState: =>
@@ -58,21 +46,23 @@ class Wraith.Controllers.TodoManager extends Wraith.Controller
     else if @list.remainingCount() isnt 0
       $toggleAll.checked = false
 
-  itemDelete: (e, $view, model) => @items.remove model.get('_id')
+  itemDelete: (e) =>
+    @items.remove e.model.get('_id')
+    @updateToggleState()
 
-  itemEdit: (e, $view, model) =>
-    model.set('editing', !model.get('editing'))
+  itemEdit: (e) =>
+    e.model.set('editing', !e.model.get('editing'))
 
-  itemKeypress: (e, $view, model) =>
+  itemKeypress: (e) =>
     return unless e.keyCode is 13 and (val = e.currentTarget.value) isnt ''
-    model.set('text', val)
-    model.set('editing', false)
+    e.model.set('text', val)
+    e.model.set('editing', false)
 
-  toggleAll: (e, $view, model) =>
+  toggleAll: (e) =>
     checked = !e.currentTarget.checked
     @list.setCompleted(!checked)
 
-  inputKeypress: (e, $item, model) =>
+  inputKeypress: (e) =>
     return unless e.keyCode is 13 and (val = e.currentTarget.value) isnt ''
     @items.create { text: val }
     e.currentTarget.value = ''
