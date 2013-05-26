@@ -1,1 +1,1 @@
-/Users/shaunspringer/Code/Personal/Wraith/lib/wraith.js
+/Users/shaunspringer/Code/Wraith/lib/wraith.js

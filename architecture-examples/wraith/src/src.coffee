@@ -50,17 +50,14 @@ class Wraith.Controllers.TodoManager extends Wraith.Controller
     @items.remove e.model.get('_id')
     @updateToggleState()
 
-  itemEdit: (e) =>
-    e.model.set('editing', !e.model.get('editing'))
+  itemEdit: (e) => e.model.set('editing', !e.model.get('editing'))
 
   itemKeypress: (e) =>
     return unless e.keyCode is 13 and (val = e.currentTarget.value) isnt ''
     e.model.set('text', val)
     e.model.set('editing', false)
 
-  toggleAll: (e) =>
-    checked = !e.currentTarget.checked
-    @list.setCompleted(!checked)
+  toggleAll: (e) => @list.setCompleted(!e.currentTarget.checked)
 
   inputKeypress: (e) =>
     return unless e.keyCode is 13 and (val = e.currentTarget.value) isnt ''

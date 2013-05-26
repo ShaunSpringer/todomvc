@@ -5,8 +5,6 @@
 		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
 		<title>Template • TodoMVC</title>
 		<link rel="stylesheet" href="components/todomvc-common/base.css">
-		<!-- CSS overrides - remove if you don't need it -->
-		<link rel="stylesheet" href="css/app.css">
 	</head>
 	<body>
 		<section id="todoapp" data-controller="TodoManager">
@@ -16,10 +14,10 @@
 			</header>
 			<!-- This section should be hidden by default and shown when there are todos -->
 			<section id="main">
-				<input id="toggle-all" type="checkbox" data-element>
+				<input id="toggle-all" type="checkbox" data-events="click:toggleAll">
 				<label for="toggle-all">Mark all as complete</label>
 				<ul id="todo-list">
-          <li class="completed" data-bind="list.items" data-repeat data-events="dblclick:itemEdit">
+          <li class="completed" data-bind="list.items" data-events="dblclick:itemEdit" data-repeat>
             <div class="view">
               <input class="toggle" type="checkbox" data-checked="completed" data-events="click:itemToggle">
               <label>{{text}}</label>
@@ -32,9 +30,10 @@
 			<!-- This footer should hidden by default and shown when there are todos -->
 			<footer id="footer">
 				<!-- This should be `0 items left` by default -->
-				<span id="todo-count"><strong data-bind="list.items">{{length()}}</strong> item left</span>
+				<span id="todo-count"><strong data-bind="list.items">{{length()}}</strong> items left</span>
 				<!-- Remove this if you don't implement routing -->
-				<ul id="filters">
+				<!--
+        <ul id="filters">
 					<li>
 						<a class="selected" href="#/">All</a>
 					</li>
@@ -45,8 +44,9 @@
 						<a href="#/completed">Completed</a>
 					</li>
 				</ul>
+        -->
 				<!-- Hidden if no completed items are left ↓ -->
-				<button id="clear-completed" data-bind="list">Clear completed ({{completedCount()}})</button>
+				<button id="clear-completed" data-bind="list" data-visible="{{completedCount > 0}}">Clear completed ({{completedCount()}})</button>
 			</footer>
 		</section>
 		<footer id="info">
