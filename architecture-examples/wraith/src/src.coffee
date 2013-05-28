@@ -20,8 +20,8 @@ class Wraith.Models.List extends Wraith.Model
 
   removeCompleted: =>
     items = @get('items').all()
-    for item, i in items when item.get('completed')
-      @get('items').remove(item.get('_id'))
+    ids = (item.get('_id') for item, i in items when item.get('completed'))
+    @get('items').remove(id) for id in ids
     @
 
 
@@ -58,6 +58,8 @@ class Wraith.Controllers.TodoManager extends Wraith.Controller
     e.model.set('editing', false)
 
   toggleAll: (e) => @list.setCompleted(e.currentTarget.checked)
+
+  clearCompleted: (e) => @list.removeCompleted();
 
   inputKeypress: (e) =>
     return unless e.keyCode is 13 and (val = e.currentTarget.value) isnt ''

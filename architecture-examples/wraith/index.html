@@ -18,7 +18,7 @@
 				<input id="toggle-all" type="checkbox" data-events="click:toggleAll">
 				<label for="toggle-all">Mark all as complete</label>
 				<ul id="todo-list">
-          <li class="editing:editing completed:completed" data-bind="list.items" data-events="dblclick:itemEdit" data-repeat>
+          <li data-class="editing:editing completed:completed" data-bind="list.items" data-events="dblclick:itemEdit" data-repeat>
             <div class="view">
               <input class="toggle" type="checkbox" data-checked="completed" data-events="click:itemToggle">
               <label>{{text}}</label>
@@ -32,22 +32,8 @@
 			<footer id="footer">
 				<!-- This should be `0 items left` by default -->
 				<span id="todo-count"><strong data-bind="list.items">{{length()}}</strong> items left</span>
-				<!-- Remove this if you don't implement routing -->
-				<!--
-        <ul id="filters">
-					<li>
-						<a class="selected" href="#/">All</a>
-					</li>
-					<li>
-						<a href="#/active">Active</a>
-					</li>
-					<li>
-						<a href="#/completed">Completed</a>
-					</li>
-				</ul>
-        -->
 				<!-- Hidden if no completed items are left ↓ -->
-				<button class="hidden:completedCount()" id="clear-completed" data-bind="list">Clear completed ({{completedCount()}})</button>
+				<button data-class="hidden:!completedCount()" id="clear-completed" data-bind="list" data-events="click:clearCompleted">Clear completed ({{completedCount()}})</button>
 			</footer>
 		</section>
 		<footer id="info">
