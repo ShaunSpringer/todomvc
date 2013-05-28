@@ -57,7 +57,7 @@ class Wraith.Controllers.TodoManager extends Wraith.Controller
     e.model.set('text', val)
     e.model.set('editing', false)
 
-  toggleAll: (e) => @list.setCompleted(!e.currentTarget.checked)
+  toggleAll: (e) => @list.setCompleted(e.currentTarget.checked)
 
   inputKeypress: (e) =>
     return unless e.keyCode is 13 and (val = e.currentTarget.value) isnt ''

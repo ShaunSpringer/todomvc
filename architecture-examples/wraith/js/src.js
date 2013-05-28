@@ -157,7 +157,7 @@
     };
 
     TodoManager.prototype.toggleAll = function(e) {
-      return this.list.setCompleted(!e.currentTarget.checked);
+      return this.list.setCompleted(e.currentTarget.checked);
     };
 
     TodoManager.prototype.inputKeypress = function(e) {
