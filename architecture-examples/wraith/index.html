@@ -15,7 +15,7 @@
 			</header>
 			<!-- This section should be hidden by default and shown when there are todos -->
 			<section id="main">
-				<input id="toggle-all" type="checkbox" data-events="click:toggleAll">
+				<input id="toggle-all" type="checkbox" data-events="click:toggleAll" data-bind="list.items" data-class="hidden:!length">
 				<label for="toggle-all">Mark all as complete</label>
 				<ul id="todo-list">
           <li data-class="editing:editing completed:completed" data-bind="list.items" data-events="dblclick:itemEdit" data-repeat>
@@ -24,16 +24,16 @@
               <label>{{text}}</label>
               <button class="destroy" data-events="click:itemDelete"></button>
             </div>
-            <input class="edit" value="Create a TodoMVC template" data-events="keypress:itemKeypress">
+            <input class="edit" value="{{text}}" data-events="keypress:itemKeypress">
           </li>
 				</ul>
 			</section>
 			<!-- This footer should hidden by default and shown when there are todos -->
-			<footer id="footer">
+			<footer id="footer" data-bind="list" data-class="hidden:!items.length">
 				<!-- This should be `0 items left` by default -->
-				<span id="todo-count"><strong data-bind="list.items">{{length()}}</strong> items left</span>
+				<span id="todo-count"><strong>{{items.length}}</strong> items left</span>
 				<!-- Hidden if no completed items are left ↓ -->
-				<button data-class="hidden:!completedCount()" id="clear-completed" data-bind="list" data-events="click:clearCompleted">Clear completed ({{completedCount()}})</button>
+				<button data-class="hidden:!completedCount" id="clear-completed" data-events="click:clearCompleted">Clear completed ({{completedCount}})</button>
 			</footer>
 		</section>
 		<footer id="info">
@@ -44,8 +44,6 @@
 		</footer>
 		<!-- Scripts here. Don't remove this ↓ -->
 		<script src="components/todomvc-common/base.js"></script>
-    <script src="//cdnjs.cloudflare.com/ajax/libs/zepto/1.0/zepto.js"></script>
-    <script src="//cdnjs.cloudflare.com/ajax/libs/hogan.js/2.0.0/hogan.js"></script>
     <!--<script src="lib/hogan.js"></script>
     <script src="lib/zepto.js"></script>-->
 		<script src="lib/wraith.js"></script>
