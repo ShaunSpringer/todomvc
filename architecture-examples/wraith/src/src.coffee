@@ -1,13 +1,13 @@
-root = exports ? @
+App = {}
 
-class Wraith.Models.ListItem extends Wraith.Model
+class App.ListItem extends Wraith.Model
   @field 'text', { default: 'New Item' }
   @field 'completed', { default: false }
   @field 'editing', { default: false }
 
 
-class Wraith.Models.List extends Wraith.Model
-  @hasMany Wraith.Models.ListItem, as: 'items'
+class App.List extends Wraith.Model
+  @hasMany App.ListItem, 'items'
 
   completedCount: => @get('items').all().reduce(((prev, cur) -> return prev + if cur.get('completed') then 1 else 0), 0)
   remainingCount: => @get('items').length() - @completedCount()
@@ -25,10 +25,10 @@ class Wraith.Models.List extends Wraith.Model
     @
 
 
-class Wraith.Controllers.TodoManager extends Wraith.Controller
+class App.TodoManager extends Wraith.Controller
   init: ->
     super()
-    @list = @registerModel new Wraith.Models.List, 'list'
+    @list = @registerModel new App.List, 'list'
     @items = @list.get('items')
 
     @items.create { text: 'Create a TodoMVC template', completed: true }
@@ -66,3 +66,7 @@ class Wraith.Controllers.TodoManager extends Wraith.Controller
     @items.create { text: val }
     e.currentTarget.value = ''
     @updateToggleState()
+
+
+root = exports ? @
+root.App = App
