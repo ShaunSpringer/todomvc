@@ -77,6 +77,7 @@ We also have a number of in-progress applications in Labs:
 - [DeftJS](http://deftjs.org/)
 - [Aria Templates](http://ariatemplates.com/)
 - [Enyo + Backbone.js](http://enyojs.com/)
+- [Wraith](https://github.com/shaunspringer/wraith/)
 
 ## Live demos
 
@@ -133,5 +134,5 @@ Check out our [contribution docs](contributing.md) for more info.
 
 ## License
 
-MIT License  
+MIT License
 Copyright (c) Addy Osmani & Sindre Sorhus
