@@ -1,7 +1,7 @@
 App = {}
 
 class App.ListItem extends Wraith.Model
-  @field 'text', { default: 'New Item' }
+  @field 'text', { default: '' }
   @field 'completed', { default: false }
   @field 'editing', { default: false }
 
@@ -29,15 +29,12 @@ class App.TodoManager extends Wraith.Controller
   init: ->
     super()
     @list = @registerModel new App.List, 'list'
-    @items = @list.get('items')
+    @list.bind 'change', @updateToggleState
 
+    @items = @list.get('items')
     @items.create { text: 'Create a TodoMVC template', completed: true }
     @items.create { text: 'Rule the web' }
     @items.create { text: 'Finish wraith' }
-
-  itemToggle: (e) =>
-    e.model.set('completed', !e.model.get('completed'))
-    @updateToggleState()
 
   updateToggleState: =>
     $toggleAll = @$els['toggle-all']
@@ -46,27 +43,11 @@ class App.TodoManager extends Wraith.Controller
     else if @list.remainingCount() isnt 0
       $toggleAll.checked = false
 
-  itemDelete: (e) =>
-    @items.remove e.model.get('_id')
-    @updateToggleState()
-
+  itemToggle: (e) => e.model.set('completed', !e.model.get('completed'))
+  itemDelete: (e) => @items.remove e.model.get('_id')
   itemEdit: (e) => e.model.set('editing', !e.model.get('editing'))
-
-  itemKeypress: (e) =>
-    return unless e.keyCode is 13 and (val = e.currentTarget.value) isnt ''
-    e.model.set('text', val)
-    e.model.set('editing', false)
-
   toggleAll: (e) => @list.setCompleted(e.currentTarget.checked)
-
   clearCompleted: (e) => @list.removeCompleted();
-
-  inputKeypress: (e) =>
-    return unless e.keyCode is 13 and (val = e.currentTarget.value) isnt ''
-    @items.create { text: val }
-    e.currentTarget.value = ''
-    @updateToggleState()
-
 
 root = exports ? @
 root.App = App
